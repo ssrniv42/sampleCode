@@ -1,0 +1,4 @@
+/* global db */
+
+
+module.exports = {};

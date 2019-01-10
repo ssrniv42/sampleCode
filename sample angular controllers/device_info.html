@@ -1,0 +1,119 @@
+
+<div class="device-info-box-details">		
+	<!-- DEVICE TYPE -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Type') }}</span>
+		<input type="text" value="{{ Device.getDeviceType(device.type_id).title }}" class="form-control" disabled="">
+	</div>		
+	<!-- DEVICE MODE -->	
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Mode') }}</span>
+		<input type="text" value="{{ Device.getDeviceType(device.type_id).modes[device.mode].title }}" class="form-control" disabled="">
+	</div>	
+	<!-- IMEI -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('IMEI') }}</span>
+		<input type="text" value="{{ device.imei }}" class="form-control" disabled="">
+	</div>
+	
+	<div ng-if="deviceTemplate=='long'">
+		<!-- COMM ID -->	
+		<div class="input-group">
+			<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Comm ID') }}</span>
+			<input type="text" value="{{ device.comm_id }}" class="form-control" disabled="">
+		</div>
+		<!-- NON REPORT -->
+		<div class="input-group">
+			<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Non Report Alert') }}</span>
+			<input type="text" value="{{ Device.getNonReportThreshold(device.non_report_threshold).title }}" class="form-control" disabled="">
+		</div>
+		<!-- ENCRYPTION -->
+		<div class="input-group" ng-if="Device.getDeviceType(device.type_id).components.cipher">
+			<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Encryption') }}</span>
+			<input type="text" value="{{ device.encryption_key || 'N/A' }}" class="form-control" disabled="">	
+		</div>
+		<!-- DECRYPTION -->
+		<div class="input-group" ng-if="Device.getDeviceType(device.type_id).components.cipher">
+			<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Decryption') }}</span>
+			<input type="text" value="{{ device.decryption_key || 'N/A' }}" class="form-control" disabled="">	
+		</div>	
+	</div>
+	
+	<!-- LOCATION -->
+	<div class="input-group">		
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate(OlMap.getUserLonlatFormat())}}</span>
+		<input type="text" value="{{ device && device.latitude &&  OlMap.formatCoordinate([device.longitude, device.latitude]) || 'N/A' }}" class="form-control" disabled="">
+	</div>
+	<!-- ALTITUDE -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Altitude') }}</span>
+		<input type="text" ng-if="device.altitude != null" value="{{ device.altitude }} ft" class="form-control" disabled="">
+		<input type="text" ng-if="device.altitude == null" value="{{ 'N/A' }}" class="form-control" disabled="">
+	</div>
+	<!-- COURSE -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Course') }}</span>
+		<input type="text" value="{{ GuiUtils.ConvertHeadingToString(device.heading) }}" class="form-control" disabled="">
+	</div>
+	<!-- SPEED  input-group-three -->
+	<div class="input-group input-group input-group-reverse">
+		<span class="input-group-addon input-group-addon-equal pull-left">{{::Language.translate('Speed') }}<span class="badge">{{ UserSetting.get().speed_format }}</span></span>
+		<input ng-if="device.speed!= null" transform-speed="UserSetting.get('speed_format')" speed-reg-ex type="text" ng-model="device.speed" class="form-control pull-left" disabled="">
+		<input ng-if="device.speed == null" type="text" value="N/A" class="form-control pull-left" disabled="">
+		<!-- Min/Max Speeds -->
+		<div class="input-group-addon device-info-box-details-group hidden">
+			<!-- Min Speed -->
+			<div class="pull-left device-info-box-min"
+				uib-tooltip="{{::Language.translate('Min Speed') }}"
+				tooltip-trigger="'mouseenter'" 
+				tooltip-placement="top">
+				<input class="device-info-box-min pull-left" disabled=""
+					ng-if="device.min_speed"
+					transform-speed="UserSetting.get('speed_format')" 
+					speed-reg-ex type="text" 
+					ng-model="device.min_speed" 
+					>	
+				<input class="device-info-box-min pull-left" disabled=""
+					ng-if="!device.min_speed"
+					value="N/A" 
+					>	
+				<!-- <span ng-if="!device.min_speed" class="device-info-box-min pull-left"></span>	 -->
+			</div>
+			<!-- Max Speed -->
+			<div class="pull-left device-info-box-max" 
+				uib-tooltip="{{::Language.translate('Max Speed') }}"
+				tooltip-trigger="'mouseenter'" 
+				tooltip-placement="top">
+				<input class="device-info-box-max pull-left" disabled=""
+					ng-if="device.max_speed"
+					transform-speed="UserSetting.get('speed_format')" 
+					speed-reg-ex type="text" 
+					ng-model="device.max_speed" 
+					uib-tooltip="{{::Language.translate('Max Speed') }}"
+					tooltip-trigger="'mouseenter'" 
+					tooltip-placement="top"
+					>
+				<input class="device-info-box-max pull-left" disabled=""
+					ng-if="!device.max_speed"
+					value="N/A" 
+					>	
+				<!-- <span ng-if="!device.max_speed" class="device-info-box-max pull-left">N/A</span> -->
+			</div>	
+		
+		</div>
+	</div>
+	<!-- REPORT AGE -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Report Age') }}</span>
+		<input ng-if="device.report_timestamp" type="text" value="{{ TimeUtils.getAge(device.report_timestamp) }}" class="form-control" disabled="">
+		<input ng-if="!device.report_timestamp" type="text" value="N/A" class="form-control" disabled="">	
+	</div>
+	<!-- LAST REPORTED -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Last Reported') }}</span>
+		<input ng-if="device.report_timestamp" type="text" value="{{ Clock.formatTimestamp(device.report_timestamp) }}" class="form-control" disabled="">	
+		<input ng-if="!device.report_timestamp" type="text" value="N/A" class="form-control" disabled="">	
+	</div>
+	<!-- CARGO INFO -->
+	<scc-device-cargo-info  ng-if="device && Device.checkIfConsignment(device, false)"  ng-init="Cargo"></scc-device-cargo-info>
+</div>	

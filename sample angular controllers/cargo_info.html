@@ -1,0 +1,86 @@
+<!-- SHADOW -->
+<div>
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Tag Id') }}</span>
+		<input type="text" value="{{ device.consignment.tag_id }}" class="form-control" disabled="">
+	</div>
+	<span class="cargo-data">
+		<!-- INDENT -->
+		<div class="input-group" ng-if="device.consignment.status.door_open != null">
+			<!-- Only show Door field if value is available -->
+			<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Door') }}</span>
+			<input type="text" ng-if="device.consignment.status.door_open == 1" value="{{ ::Language.translate('Open') }}" class="form-control"
+			 disabled="">
+			<input type="text" ng-if="device.consignment.status.door_open == 0" value="{{ ::Language.translate('Closed') }}" class="form-control"
+			 disabled="">
+		</div>
+		<!-- TEMPERATURE -->
+		<div class="input-group input-group-reverse input-group-three" ng-if="device.consignment.status.temperature != null">
+			<span class="input-group-addon input-group-addon-equal pull-left">{{::Language.translate('Temperature') }}</span>
+			<!-- <input type="text" value="{{ device.consignment.status.temperature }} C" class="form-control pull-left" disabled=""> -->
+			<div class="form-control pull-left">{{ device.consignment.status.temperature }}&#8451;</div>
+			<!-- Min/Max Temperature -->
+			<span class="input-group-addon device-info-box-details-group">
+				<!-- Min Temperature -->
+				<div class="device-info-box-min pull-left" uib-tooltip="{{::Language.translate('TEMPERATURE LOW') }}" tooltip-trigger="'mouseenter'"
+				 tooltip-placement="top">
+					<div ng-if="device.consignment.settings.temp_low">{{ device.consignment.settings.temp_low }}&#8451;</div>
+					<div ng-if="!device.consignment.settings.temp_low">N/A</div>
+				</div>
+				<!-- Max Temperature -->
+				<div class="device-info-box-max pull-right" uib-tooltip="{{::Language.translate('TEMPERATURE HIGH') }}" tooltip-trigger="'mouseenter'"
+				 tooltip-placement="top">
+					<div ng-if="device.consignment.settings.temp_high">{{ device.consignment.settings.temp_high }}&#8451;</div>
+					<div ng-if="!device.consignment.settings.temp_high">N/A</div>
+				</div>
+			</span>
+		</div>
+		<!-- HUMIDITY -->
+		<div class="input-group input-group-reverse input-group-three" ng-if="device.consignment.status.humidity != null">
+			<span class="input-group-addon input-group-addon-equal pull-left">{{::Language.translate('Humidity') }}</span>
+			<input type="text" ng-if="device.consignment.status.humidity" value="{{ device.consignment.status.humidity }}%" class="form-control pull-left"
+			 disabled="">
+			<!-- Min/Max Temperature -->
+			<span class="input-group-addon device-info-box-details-group">
+				<!-- Min Temperature -->
+				<div class="device-info-box-min pull-left" uib-tooltip="{{::Language.translate('HUMIDITY HIGH') }}" tooltip-trigger="'mouseenter'"
+				 tooltip-placement="top">
+					<div>0%</div>
+				</div>
+				<!-- Max Temperature -->
+				<div class="device-info-box-max pull-right" uib-tooltip="{{::Language.translate('HUMIDITY HIGH') }}" tooltip-trigger="'mouseenter'"
+				 tooltip-placement="top">
+					<div ng-if="device.consignment.settings.humidity_high">{{ device.consignment.settings.humidity_high }}%</div>
+					<div ng-if="!device.consignment.settings.humidity_high">N/A</div>
+				</div>
+			</span>
+		</div>
+		<!-- SHOCK -->
+		<div class="input-group" ng-if="device.consignment.status.shock != null && Device.getDeviceType(device.type_id).title != 'Shadow'">
+			<!-- Only show Shock field if value is available and also if device is not a Shadow -->
+			<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Shock') }}</span>
+			<input type="text" ng-if="device.consignment.status.shock > device.consignment.settings.shock_high" value="{{ ::Language.translate('Shock') }}"
+			 class="form-control pull-left" disabled="">
+			<input type="text" ng-if="device.consignment.status.shock <= device.consignment.settings.shock_high" value="{{ ::Language.translate('No Shock') }}"
+			 class="form-control pull-left" disabled="">
+		</div>
+		<!-- BATTERY -->
+		<div class="input-group" ng-if="device.consignment.status.battery_charge != null">
+			<!-- Only show Battery field if value is available -->
+			<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Battery') }}</span>
+			<input type="text" ng-if="device.consignment.status.battery_charge != 100" value="{{ ::Language.translate('Low') }}" class="form-control"
+			 disabled="">
+			<input type="text" ng-if="device.consignment.status.battery_charge == 100" value="{{ ::Language.translate('Normal') }}" class="form-control"
+			 disabled="">
+		</div>
+		<!-- LAST REPORTED -->
+		<div class="input-group">
+			<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Last Reported') }}</span>
+			<input type="text" ng-if="UserSetting.get().clock_format == 24" value="{{ device.consignment.status.last_status_reported * 1000 | date : 'MMM d, y HH:mm:ss' }}"
+			 class="form-control" disabled="">
+			<input type="text" ng-if="UserSetting.get().clock_format == 12" value="{{ device.consignment.status.last_status_reported * 1000 | date : 'MMM d, y hh:mm:ss a' }}"
+			 class="form-control" disabled="">
+		</div>
+		<!-- /INDENT -->
+	</span>
+</div>

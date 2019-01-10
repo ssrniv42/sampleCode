@@ -1,0 +1,57 @@
+<div class="device-info-box-details">	
+
+	<!-- DEVICE TYPE -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Device Type') }}</span>
+		<input type="text" value="{{ Device.getDeviceType(Device.get(deviceId).type_id).title }}" class="form-control" disabled="">
+	</div>		
+	<!-- DEVICE MODE -->	
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Device Mode') }}</span>
+		<input type="text" value="{{ Device.getDeviceType(Device.get(deviceId).type_id).modes[Device.get(deviceId).mode].title }}" class="form-control" disabled="">
+	</div>	
+	<!-- IMEI -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('IMEI') }}</span>
+		<input type="text" value="{{ Device.get(deviceId).imei }}" class="form-control" disabled="">
+	</div>
+	
+	
+	<!-- LOCATION -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate(OlMap.getUserLonlatFormat())}} </span>
+		<input type="text" value="{{ OlMap.getLocation(Device.get(deviceId)) || 'N/A' }}" class="form-control" disabled="">
+	</div>
+	<!-- ALTITUDE -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Altitude') }}</span>
+		<input type="text" ng-if="Device.get(deviceId).altitude != null" value="{{ Device.get(deviceId).altitude }} ft" class="form-control" disabled="">
+		<input type="text" ng-if="Device.get(deviceId).altitude == null" value="{{ 'N/A' }}" class="form-control" disabled="">
+	</div>
+	<!-- COURSE -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Course') }}</span>
+		<input type="text" value="{{ GuiUtils.ConvertHeadingToString(Device.get(deviceId).heading) }}" class="form-control" disabled="">
+	</div>
+	<!-- SPEED -->
+	<div class="input-group input-group-reverse input-group-three">
+		<span class="input-group-addon input-group-addon-equal pull-left">{{::Language.translate('Speed') }}<span class="badge">{{ UserSetting.get().speed_format }}</span></span>
+		<input ng-if="Device.get(deviceId).speed" transform-speed="UserSetting.get('speed_format')" speed-reg-ex type="text" ng-model="Device.get(deviceId).speed" class="form-control pull-left" disabled="">
+		<input ng-if="!Device.get(deviceId).speed" type="text" value="N/A" class="form-control pull-left" disabled="">
+		
+	</div>
+	<!-- REPORT AGE -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Report Age') }}</span>
+		<input ng-if="Device.get(deviceId).report_timestamp" type="text" value="{{ TimeUtils.getAge(Device.get(deviceId).report_timestamp) }}" class="form-control" disabled="">
+		<input ng-if="!Device.get(deviceId).report_timestamp" type="text" value="N/A" class="form-control" disabled="">	
+	</div>
+	<!-- LAST REPORTED -->
+	<div class="input-group">
+		<span class="input-group-addon input-group-addon-equal">{{::Language.translate('Last Reported') }}</span>
+		<input ng-if="Device.get(deviceId).report_timestamp" type="text" value="{{ Clock.formatTimestamp(Device.get(deviceId).report_timestamp) }}" class="form-control" disabled="">	
+		<input ng-if="!Device.get(deviceId).report_timestamp" type="text" value="N/A" class="form-control" disabled="">	
+	</div>
+	<!-- CARGO INFO -->
+	<scc-device-cargo-info ng-if="Device.checkIfConsignment(Device.get(deviceId), false)" ng-init="Cargo"></scc-device-cargo-info>	
+</div>	
